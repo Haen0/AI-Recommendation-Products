@@ -3,62 +3,62 @@
         
         <h1>TF-IDF Scores</h1>
 
-        <h2>Individual Word Scores</h2>
+        <p>Individual Word Scores</p>
 
-        <table border="1">
+        <table class="border border-1">
             <thead>
                 <tr>
-                    <th>Product</th>
+                    <th class="border border-1">Product</th>
                     @foreach($wordssss as $word)
-                        <th>{{ $word }}</th>
+                        <th class="border border-1">{{ $word }}</th>
                     @endforeach
                 </tr>
             </thead>
             <tbody>
                 @foreach($products as $product)
                     <tr>
-                        <td>{{ $product->name }}</td>
+                        <td class="border border-1">{{ $product->name }}</td>
                         @foreach($wordssss as $word)
-                            <td>{{ isset($nilaiProduk[$word][$product->id]) ? $nilaiProduk[$word][$product->id] : 0 }}</td>
+                            <td class="border border-1">{{ isset($nilaiProduk[$word][$product->id]) ? $nilaiProduk[$word][$product->id] : 0 }}</td>
                         @endforeach
                     </tr>
                 @endforeach
             </tbody>
         </table>
 
-        <h2>Total Scores for Each Word</h2>
+        <p>Total Scores for Each Word</p>
 
-        <table border="1">
+        <table class="border border-1">
             <thead>
                 <tr>
-                    <th>Word</th>
-                    <th>Total Score</th>
-                    <th>Average Score</th>
-                    <th>IDF Score</th>
+                    <th class="border border-1">Word</th>
+                    <th class="border border-1">Total Score</th>
+                    <th class="border border-1">Average Score</th>
+                    <th class="border border-1">IDF Score</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($wordssss as $word)
                     <tr>
-                        <td>{{ $word }}</td>
-                        <td>{{ $totalNilai[$word] }}</td>
-                        <td>{{ $avgNilai[$word] }}</td>
-                        <td>{{ $idf[$word] }}</td>
+                        <td class="border border-1">{{ $word }}</td>
+                        <td class="border border-1">{{ $totalNilai[$word] }}</td>
+                        <td class="border border-1">{{ $avgNilai[$word] }}</td>
+                        <td class="border border-1">{{ $idf[$word] }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
         
-        <h2>Individual Word Scores</h2>
+        <p>Individual Word Scores</p>
 
-        <table border="1">
+        <table class="border border-1">
             <thead>
                 <tr>
-                    <th>Product</th>
+                    <th class="border border-1">Product</th>
                     @foreach($wordssss as $word)
-                        <th>{{ $word }}</th>
+                        <th class="border border-1">{{ $word }}</th>
                     @endforeach
-                    <th>Total Score with IDF</th>
+                    <th class="border border-1">Total Score with IDF</th>
                 </tr>
             </thead>
             <tbody>
@@ -67,7 +67,7 @@
                 @endphp
                 @foreach($products as $product)
                     <tr>
-                        <td>{{ $product->name }}</td>
+                        <td class="border border-1">{{ $product->name }}</td>
                         @php
                             $totalNilaiWithIDF = 0;
                         @endphp
@@ -77,9 +77,9 @@
                                 $nilaiWithIDF = isset($nilaiProduk[$word][$product->id]) ? $nilaiProduk[$word][$product->id] * $idfValue : 0;
                                 $totalNilaiWithIDF += $nilaiWithIDF;
                             @endphp
-                            <td>{{ $nilaiWithIDF }}</td>
+                            <td class="border border-1">{{ $nilaiWithIDF }}</td>
                         @endforeach
-                        <td>{{ $totalNilaiWithIDF }}</td>
+                        <td class="border border-1">{{ $totalNilaiWithIDF }}</td>
                     </tr>
                     @php
                         $produkWithNilai[$product->id] = $totalNilaiWithIDF;
@@ -92,19 +92,19 @@
             arsort($produkWithNilai);
         @endphp
         
-        <h2>Products Sorted by Total Score with IDF</h2>
-        <table border="1">
+        <p>Products Sorted by Total Score with IDF</p>
+        <table class="border border-1">
             <thead>
                 <tr>
-                    <th>Product ID</th>
-                    <th>Total Score with IDF</th>
+                    <th class="border border-1">Product ID</th>
+                    <th class="border border-1">Total Score with IDF</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($produkWithNilai as $productId => $totalNilai)
                     <tr>
-                        <td>{{ $productId }}</td>
-                        <td>{{ $totalNilai }}</td>
+                        <td class="border border-1">{{ $productId }}</td>
+                        <td class="border border-1">{{ $totalNilai }}</td>
                     </tr>
                 @endforeach
             </tbody>
