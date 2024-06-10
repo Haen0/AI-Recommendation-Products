@@ -8,12 +8,6 @@ use Illuminate\Http\Request;
 
 class PembeliController extends Controller
 {
-    // public function dashboard()
-    // {
-    //     $products = Product::all();
-    //     return view('pembeli', compact('products'));
-    // }
-
     public function search(Request $request)
     {
         $search = $request->input('search');
@@ -32,62 +26,74 @@ class PembeliController extends Controller
     {
         $products = Product::all();
         $semuaKata = [];
-        
-        //Pecah semua nama produk
-        foreach ($products as $product) {
-            $words = explode(' ', $product->name);
-            
-            foreach ($words as $word) {
-                if (!in_array($word, $semuaKata)) {
-                    $semuaKata[] = $word;
-                }
-            }
-        }
 
-        //Kata dengan nilai tertinggi
         $topWords = WordCount::orderBy('count', 'desc')->take(5)->get();
-        
-        //Cek semua nama produk dengan kata kunci
-        $wordssss = [];
-        foreach ($topWords as $topWord) {
-            if (in_array($topWord->word, $semuaKata)) {
-                $wordssss[] = $topWord->word;
-            }
-        }
-        
-        //Mulai perhitungan TF IDF
+
+        //Menghitung TF (Membandingkan semua nama produk dengan kata kunci)
         $nilaiProduk = [];
         foreach ($products as $product) {
             $words = explode(' ', $product->name);
-            foreach ($wordssss as $word) {
-                if (in_array($word, $words)) {
-                    if (!isset($nilaiProduk[$word][$product->id])) {
-                        $nilaiProduk[$word][$product->id] = 0;
+            foreach ($topWords as $topWord) {
+                foreach ($words as $word) {
+                    if ($topWord->word == $word) { 
+                        if (!isset($nilaiProduk[$topWord->word][$product->id])) {
+                            $nilaiProduk[$topWord->word][$product->id] = 0;
+                        }
+                        $nilaiProduk[$topWord->word][$product->id]++;
                     }
-                    $nilaiProduk[$word][$product->id]++;
                 }
             }
         }
+        // dd($nilaiProduk);
 
+        //Menghitung DF (Menghitung jumlah produk pada masing-masing kata kunci)
         $totalNilai = [];
-        foreach ($wordssss as $word) {
-            $totalNilai[$word] = 0;
+        foreach ($topWords as $topWord) {
+            $totalNilai[$topWord->word] = 0;
 
             foreach ($products as $product) {
-                if (isset($nilaiProduk[$word][$product->id])) {
-                    $totalNilai[$word] += $nilaiProduk[$word][$product->id];
+                if (isset($nilaiProduk[$topWord->word][$product->id])) {
+                    $totalNilai[$topWord->word]++;
                 }
             }
         }
+        // dd($totalNilai);
 
+        // Menghitung D/df (Total produk dibagi df)
         $totalProduk = Product::count();
-        $avgNilai = [];
+        $ddfNilai = [];
         $idf = [];
-        foreach ($wordssss as $word) {
-            $avgNilai[$word] = $totalProduk / ($totalNilai[$word]);
-            $idf[$word] = log($totalProduk / ($totalNilai[$word]));
+        foreach ($topWords as $topWord) {
+            $ddfNilai[$topWord->word] = $totalProduk / ($totalNilai[$topWord->word]);
+            //Menghitung IDF (Log D/df)
+            $idf[$topWord->word] = log($ddfNilai[$topWord->word]);
+            // $idf[$topWord->word] = log($totalProduk / ($totalNilai[$topWord->word]));
         }
 
-        return view('pembeli', compact('nilaiProduk', 'products', 'wordssss', 'totalNilai', 'avgNilai', 'idf'));
+        //Menghitung TF dengan IDF
+        $bobotProducts = [];
+        foreach ($products as $product) {
+            foreach ($topWords as $topWord) {
+                if (isset($nilaiProduk[$topWord->word][$product->id])) {
+                    $bobotProducts[$topWord->word][$product->id] = $idf[$topWord->word] * $nilaiProduk[$topWord->word][$product->id];
+                }
+            }
+        }
+        // dd($bobotProducts);
+
+        $totalBobotProducts = [];
+        foreach ($products as $product) {
+            $totalBobot = 0;
+            foreach ($topWords as $topWord) {
+                if (isset($bobotProducts[$topWord->word][$product->id])) {
+                    $totalBobot += $bobotProducts[$topWord->word][$product->id];
+                }
+            }
+            $totalBobotProducts[$product->id] = $totalBobot;
+        }
+        arsort($totalBobotProducts);
+        // dd($totalBobotProducts);
+
+        return view('pembeli', compact('totalBobotProducts', 'products'));
     }
 }

@@ -11,7 +11,12 @@
 
 <div class="flex flex-wrap gap-5 justify-center pt-3">
 
-    <div class="">
+    <a href="{{ url()->previous() }}" class="text-lg font-semibold my-5">
+        <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
+        </svg>
+    </a>
+
     <div class="grid gap-4 pt-5">
         <div id="featured-image-container" class="h-60">
             <img class="w-80 h-60 object-cover rounded-lg" src="{{ asset('storage/' . $product->image1) }}" alt="">
@@ -27,7 +32,6 @@
                 <img class="w-24 h-24 object-cover rounded-lg" src="{{ asset('storage/' . $product->image3) }}" alt="" onclick="changeFeaturedImage(this)">
             </div>
         </div>
-    </div>
     </div>
     <div class="max-w-sm p-6 rounded-lg">
         <p class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $product->name }}</p>
@@ -55,13 +59,13 @@
                 Tambahkan ke Troli
             </a> --}}
             
-                <div class="flex flex-col lg:flex-row justify-end gap-3">
-                    <button type="submit" class="items-center px-3 py-2 text-sm font-medium text-center text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-2 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
-                        Tambahkan ke Troli
-                    </button>
-                </div>
+            <div class="flex flex-col lg:flex-row justify-end gap-3">
+                <button type="submit" class="items-center px-3 py-2 text-sm font-medium text-center text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-2 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                    Tambahkan ke Troli
+                </button>
             </div>
         </div>
+    </div>
 
 </div>
 
